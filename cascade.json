@@ -1,0 +1,392 @@
+{
+  "tools": [
+    {
+      "name": "browser_preview",
+      "description": "Spin up a browser preview for a web server. This allows the USER to interact with the web server normally as well as provide console logs and other information from the web server to Cascade.",
+      "parameters": [
+        {
+          "name": "Name",
+          "description": "A short name 3-5 word name for the target web server. Should be title-cased e.g. 'Personal Website'."
+        },
+        {
+          "name": "Url",
+          "description": "The URL of the target web server to provide a browser preview for. This should contain the scheme, domain, and port but no path."
+        }
+      ]
+    },
+    {
+      "name": "check_deploy_status",
+      "description": "Check the status of the deployment using its windsurf_deployment_id for a web application.",
+      "parameters": [
+        {
+          "name": "WindsurfDeploymentId",
+          "description": "The Windsurf deployment ID for the deploy we want to check status for."
+        }
+      ]
+    },
+    {
+      "name": "codebase_search",
+      "description": "Find snippets of code from the codebase most relevant to the search query.",
+      "parameters": [
+        {
+          "name": "Query",
+          "description": "Search query"
+        },
+        {
+          "name": "TargetDirectories",
+          "description": "List of absolute paths to directories to search over"
+        }
+      ]
+    },
+    {
+      "name": "command_status",
+      "description": "Get the status of a previously executed terminal command by its ID.",
+      "parameters": [
+        {
+          "name": "CommandId",
+          "description": "ID of the command to get status for"
+        },
+        {
+          "name": "OutputCharacterCount",
+          "description": "Number of characters to view"
+        },
+        {
+          "name": "WaitDurationSeconds",
+          "description": "Number of seconds to wait for command completion"
+        }
+      ]
+    },
+    {
+      "name": "create_memory",
+      "description": "Save important context relevant to the USER and their task to a memory database.",
+      "parameters": [
+        {
+          "name": "Action",
+          "description": "The type of action to take on the MEMORY (create, update, or delete)"
+        },
+        {
+          "name": "Content",
+          "description": "Content of a new or updated MEMORY"
+        },
+        {
+          "name": "CorpusNames",
+          "description": "CorpusNames of the workspaces associated with the MEMORY"
+        },
+        {
+          "name": "Id",
+          "description": "Id of an existing MEMORY to update or delete"
+        },
+        {
+          "name": "Tags",
+          "description": "Tags to associate with the MEMORY"
+        },
+        {
+          "name": "Title",
+          "description": "Descriptive title for a new or updated MEMORY"
+        },
+        {
+          "name": "UserTriggered",
+          "description": "Set to true if the user explicitly asked to create/modify this memory"
+        }
+      ]
+    },
+    {
+      "name": "deploy_web_app",
+      "description": "Deploy a JavaScript web application to a deployment provider like Netlify.",
+      "parameters": [
+        {
+          "name": "Framework",
+          "description": "The framework of the web application"
+        },
+        {
+          "name": "ProjectId",
+          "description": "The project ID of the web application if it exists"
+        },
+        {
+          "name": "ProjectPath",
+          "description": "The full absolute project path of the web application"
+        },
+        {
+          "name": "Subdomain",
+          "description": "Subdomain or project name used in the URL"
+        }
+      ]
+    },
+    {
+      "name": "find_by_name",
+      "description": "Search for files and subdirectories within a specified directory using fd.",
+      "parameters": [
+        {
+          "name": "SearchDirectory",
+          "description": "The directory to search within"
+        },
+        {
+          "name": "Pattern",
+          "description": "Pattern to search for, supports glob format"
+        },
+        {
+          "name": "Extensions",
+          "description": "File extensions to include (without leading .)"
+        },
+        {
+          "name": "Excludes",
+          "description": "Exclude files/directories that match the given glob patterns"
+        },
+        {
+          "name": "MaxDepth",
+          "description": "Maximum depth to search"
+        },
+        {
+          "name": "Type",
+          "description": "Type filter (file, directory, any)"
+        },
+        {
+          "name": "FullPath",
+          "description": "Whether the full absolute path must match the glob pattern"
+        }
+      ]
+    },
+    {
+      "name": "grep_search",
+      "description": "Use ripgrep to find exact pattern matches within files or directories.",
+      "parameters": [
+        {
+          "name": "SearchPath",
+          "description": "The path to search. This can be a directory or a file."
+        },
+        {
+          "name": "Query",
+          "description": "The search term or pattern to look for within files"
+        },
+        {
+          "name": "CaseInsensitive",
+          "description": "If true, performs a case-insensitive search"
+        },
+        {
+          "name": "IsRegex",
+          "description": "If true, treats Query as a regular expression pattern"
+        },
+        {
+          "name": "MatchPerLine",
+          "description": "If true, returns each line that matches the query"
+        },
+        {
+          "name": "Includes",
+          "description": "The files or directories to search within"
+        }
+      ]
+    },
+    {
+      "name": "list_dir",
+      "description": "List the contents of a directory.",
+      "parameters": [
+        {
+          "name": "DirectoryPath",
+          "description": "Path to list contents of, should be absolute path to a directory"
+        }
+      ]
+    },
+    {
+      "name": "list_resources",
+      "description": "Lists the available resources from an MCP server.",
+      "parameters": [
+        {
+          "name": "ServerName",
+          "description": "Name of the server to list available resources from"
+        },
+        {
+          "name": "Cursor",
+          "description": "Opaque string used for pagination"
+        }
+      ]
+    },
+    {
+      "name": "read_deployment_config",
+      "description": "Read the deployment configuration for a web application.",
+      "parameters": [
+        {
+          "name": "ProjectPath",
+          "description": "The full absolute project path of the web application"
+        }
+      ]
+    },
+    {
+      "name": "read_resource",
+      "description": "Retrieves a specified resource's contents.",
+      "parameters": [
+        {
+          "name": "ServerName",
+          "description": "Name of the server to read the resource from"
+        },
+        {
+          "name": "Uri",
+          "description": "Unique identifier for the resource"
+        }
+      ]
+    },
+    {
+      "name": "replace_file_content",
+      "description": "Use this tool to edit an existing file.",
+      "parameters": [
+        {
+          "name": "TargetFile",
+          "description": "The target file to modify"
+        },
+        {
+          "name": "Instruction",
+          "description": "A description of the changes being made to the file"
+        },
+        {
+          "name": "CodeMarkdownLanguage",
+          "description": "Markdown language for the code block"
+        },
+        {
+          "name": "ReplacementChunks",
+          "description": "A list of chunks to replace"
+        },
+        {
+          "name": "TargetLintErrorIds",
+          "description": "IDs of lint errors this edit aims to fix"
+        }
+      ]
+    },
+    {
+      "name": "run_command",
+      "description": "PROPOSE a command to run on behalf of the user.",
+      "parameters": [
+        {
+          "name": "CommandLine",
+          "description": "The exact command line string to execute"
+        },
+        {
+          "name": "Cwd",
+          "description": "The current working directory for the command"
+        },
+        {
+          "name": "Blocking",
+          "description": "If true, the command will block until it is entirely finished"
+        },
+        {
+          "name": "SafeToAutoRun",
+          "description": "Set to true if you believe that this command is safe to run WITHOUT user approval"
+        },
+        {
+          "name": "WaitMsBeforeAsync",
+          "description": "Milliseconds to wait after starting the command before sending it to be fully async"
+        }
+      ]
+    },
+    {
+      "name": "search_in_file",
+      "description": "Returns code snippets in the specified file that are most relevant to the search query.",
+      "parameters": [
+        {
+          "name": "AbsolutePath",
+          "description": "Absolute path to the file to search in"
+        },
+        {
+          "name": "Query",
+          "description": "Search query"
+        }
+      ]
+    },
+    {
+      "name": "suggested_responses",
+      "description": "Supply a small number of possible suggested answers to your question.",
+      "parameters": [
+        {
+          "name": "Suggestions",
+          "description": "List of suggestions. Each should be at most a couple words."
+        }
+      ]
+    },
+    {
+      "name": "update_plan",
+      "description": "Reflect and update the plan that needs to be followed to accomplish the task at hand.",
+      "parameters": [
+        {
+          "name": "UpdateReason",
+          "description": "Reason for updating the plan (user_requested, user_new_info, research_new_info)"
+        }
+      ]
+    },
+    {
+      "name": "view_code_item",
+      "description": "View the content of up to 5 code item nodes in a file, each as a class or a function.",
+      "parameters": [
+        {
+          "name": "File",
+          "description": "Absolute path to the node to edit, e.g /path/to/file"
+        },
+        {
+          "name": "NodePaths",
+          "description": "Path of the nodes within the file, e.g package.class.FunctionName"
+        }
+      ]
+    },
+    {
+      "name": "view_content_chunk",
+      "description": "View a specific chunk of document content using its DocumentId and chunk position.",
+      "parameters": [
+        {
+          "name": "document_id",
+          "description": "The ID of the document that the chunk belongs to"
+        },
+        {
+          "name": "position",
+          "description": "The position of the chunk to view"
+        }
+      ]
+    },
+    {
+      "name": "view_file_outline",
+      "description": "View the outline of the input file.",
+      "parameters": [
+        {
+          "name": "AbsolutePath",
+          "description": "Path to file to view. Must be an absolute path."
+        },
+        {
+          "name": "ItemOffset",
+          "description": "Offset of items to show. This is used for pagination."
+        }
+      ]
+    },
+    {
+      "name": "view_line_range",
+      "description": "View the contents of a file. The lines of the file are 1-indexed.",
+      "parameters": [
+        {
+          "name": "AbsolutePath",
+          "description": "Path to file to view. Must be an absolute path."
+        },
+        {
+          "name": "StartLine",
+          "description": "Startline to view, 1-indexed as usual"
+        },
+        {
+          "name": "EndLine",
+          "description": "Endline to view, 1-indexed as usual, inclusive."
+        }
+      ]
+    },
+    {
+      "name": "write_to_file",
+      "description": "Use this tool to create new files.",
+      "parameters": [
+        {
+          "name": "TargetFile",
+          "description": "The target file to create and write code to."
+        },
+        {
+          "name": "CodeContent",
+          "description": "The code contents to write to the file."
+        },
+        {
+          "name": "EmptyFile",
+          "description": "Set this to true to create an empty file."
+        }
+      ]
+    }
+  ]
+}
