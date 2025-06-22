@@ -1,3 +1,19 @@
+EXAMLPLE
+
+
+```
+find_by_name --SearchDirectory "/Users/phodal/works/galaxy/migrate/migrate-cli" --Type "file" --Pattern "*.js" --MaxDepth 3
+find_by_name --SearchDirectory "/Users/phodal/works/galaxy/migrate/migrate-cli" --Pattern "bin/vue-migrator.js" --Type "file"
+find_by_name --SearchDirectory "/Users/phodal/works/galaxy/migrate/migrate-cli" --Pattern "*vue-migrator*.js" --Type "file"
+view_line_range --AbsolutePath "/Users/phodal/works/galaxy/migrate/migrate-cli/bin/vue-migrator.js" --StartLine 1 --EndLine 100
+view_file_outline --AbsolutePath "/Users/phodal/works/galaxy/migrate/migrate-cli/src/ai/aiRepairer.js" --ItemOffset 0
+view_file_outline --AbsolutePath "/Users/phodal/works/galaxy/migrate/migrate-cli/src/ai/BuildFixAgent.js" --ItemOffset 0
+run_command --CommandLine "node bin/vue-migrator.js auto /Users/phodal/works/galaxy/migrate/vue-element-admin /Users/phodal/works/galaxy/vue3-element-plus" --Cwd "/Users/phodal/works/galaxy/migrate/migrate-cli" --Blocking true
+```
+
+
+
+
 <invoke name="view_file_outline">
 <parameter name="AbsolutePath">/Users/phodal/works/galaxy/migrate/migrate-cli/bin/vue-migrator.js</parameter>
 <parameter name="ItemOffset">0</parameter>
