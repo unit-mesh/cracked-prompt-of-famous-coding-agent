@@ -1,0 +1,437 @@
+{
+  "agent_name": "Rovo Dev Agent",
+  "version": "1.0.0",
+  "description": "综合型 AI Coding Agent，结合多家工具优势与 Rovo Dev 能力",
+  "design_philosophy": {
+    "user_experience": "智能协作式界面",
+    "response_style": "详细分析 + 简洁执行",
+    "task_execution": "自主性与协作性并重",
+    "security_strategy": "多层安全机制",
+    "extensibility": "模块化插件架构"
+  },
+  
+  "tool_categories": {
+    "file_system": {
+      "description": "文件系统操作工具集",
+      "tools": [
+        {
+          "name": "open_files",
+          "description": "打开并查看一个或多个文件",
+          "source": "rovo_dev",
+          "parameters": {
+            "file_paths": {
+              "type": "array",
+              "items": {"type": "string"},
+              "required": true,
+              "description": "要打开的文件路径列表"
+            }
+          },
+          "capabilities": ["批量文件打开", "智能内容展示"],
+          "limitations": ["需要文件存在"]
+        },
+        {
+          "name": "expand_code_chunks", 
+          "description": "展开文件中的特定代码块或符号",
+          "source": "rovo_dev",
+          "parameters": {
+            "file_path": {"type": "string", "required": true},
+            "patterns": {"type": "array", "items": {"type": "string"}},
+            "line_ranges": {"type": "array", "items": {"type": "array"}}
+          },
+          "capabilities": ["符号级定位", "智能代码展开"],
+          "limitations": ["需要先打开文件"]
+        },
+        {
+          "name": "find_and_replace_code",
+          "description": "精确的代码查找和替换",
+          "source": "rovo_dev", 
+          "parameters": {
+            "file_path": {"type": "string", "required": true},
+            "find": {"type": "string", "required": true},
+            "replace": {"type": "string", "required": true}
+          },
+          "capabilities": ["精确字符串匹配", "安全替换"],
+          "limitations": ["单次操作单个文件"]
+        },
+        {
+          "name": "create_file",
+          "description": "创建新文件",
+          "source": "rovo_dev",
+          "parameters": {
+            "file_path": {"type": "string", "required": true},
+            "initial_content": {"type": "string", "default": ""},
+            "overwrite": {"type": "boolean", "default": false}
+          },
+          "capabilities": ["新文件创建", "覆盖保护"],
+          "limitations": ["需要有效路径"]
+        },
+        {
+          "name": "delete_file",
+          "description": "删除文件",
+          "source": "rovo_dev",
+          "parameters": {
+            "file_path": {"type": "string", "required": true}
+          },
+          "capabilities": ["安全删除"],
+          "limitations": ["不可恢复"]
+        }
+      ]
+    },
+    
+    "code_intelligence": {
+      "description": "代码理解和搜索工具",
+      "tools": [
+        {
+          "name": "grep_file_content",
+          "description": "在所有文件中搜索内容模式",
+          "source": "rovo_dev",
+          "parameters": {
+            "pattern": {"type": "string", "required": true, "description": "正则表达式搜索模式"}
+          },
+          "capabilities": ["全局内容搜索", "正则表达式支持"],
+          "limitations": ["可能产生大量结果"]
+        },
+        {
+          "name": "codebase_search",
+          "description": "AI驱动的语义代码搜索",
+          "source": "augment_inspired",
+          "parameters": {
+            "query": {"type": "string", "required": true, "description": "自然语言查询"},
+            "scope": {"type": "string", "optional": true, "description": "搜索范围"}
+          },
+          "capabilities": ["语义理解", "意图识别", "跨文件关联"],
+          "limitations": ["需要AI模型支持"]
+        },
+        {
+          "name": "symbol_search",
+          "description": "精确的符号级搜索",
+          "source": "lingma_inspired",
+          "parameters": {
+            "symbols": {"type": "array", "items": {"type": "string"}, "required": true},
+            "include_references": {"type": "boolean", "default": false}
+          },
+          "capabilities": ["多符号查询", "定义与引用区分"],
+          "limitations": ["需要语言服务器支持"]
+        }
+      ]
+    },
+    
+    "terminal_execution": {
+      "description": "终端和进程管理工具",
+      "tools": [
+        {
+          "name": "bash",
+          "description": "执行bash命令",
+          "source": "rovo_dev",
+          "parameters": {
+            "command": {"type": "string", "required": true},
+            "timeout": {"type": "number", "optional": true, "max": 600000}
+          },
+          "capabilities": ["命令执行", "输出捕获", "超时控制"],
+          "limitations": ["安全限制", "时间限制"],
+          "security": {
+            "command_injection_detection": true,
+            "banned_commands": ["curl", "wget", "nc", "telnet"],
+            "user_confirmation": "for_risky_commands"
+          }
+        },
+        {
+          "name": "process_management",
+          "description": "进程生命周期管理",
+          "source": "augment_inspired",
+          "parameters": {
+            "action": {"type": "enum", "values": ["start", "stop", "status", "list"]},
+            "command": {"type": "string", "required_if": "action=start"},
+            "process_id": {"type": "string", "required_if": "action in [stop,status]"},
+            "background": {"type": "boolean", "default": false}
+          },
+          "capabilities": ["后台进程管理", "状态监控", "进程间通信"],
+          "limitations": ["平台依赖"]
+        }
+      ]
+    },
+    
+    "diagnostics": {
+      "description": "代码质量和诊断工具",
+      "tools": [
+        {
+          "name": "get_diagnostics",
+          "description": "获取代码诊断信息",
+          "source": "lingma_inspired",
+          "parameters": {
+            "file_paths": {"type": "array", "items": {"type": "string"}, "required": true},
+            "severity": {"type": "enum", "values": ["error", "warning", "info", "hint"], "default": "warning"},
+            "include_suggestions": {"type": "boolean", "default": true}
+          },
+          "capabilities": ["实时错误检测", "修复建议", "多文件批处理"],
+          "limitations": ["需要语言服务器"]
+        },
+        {
+          "name": "code_quality_check",
+          "description": "代码质量综合检查",
+          "source": "enhanced",
+          "parameters": {
+            "paths": {"type": "array", "items": {"type": "string"}},
+            "checks": {"type": "array", "items": {"type": "string"}, "default": ["lint", "format", "security"]}
+          },
+          "capabilities": ["多维度质量检查", "自动修复建议"],
+          "limitations": ["工具链依赖"]
+        }
+      ]
+    },
+    
+    "memory_management": {
+      "description": "项目记忆和上下文管理",
+      "tools": [
+        {
+          "name": "project_memory",
+          "description": "项目级记忆管理",
+          "source": "claude_inspired",
+          "parameters": {
+            "action": {"type": "enum", "values": ["read", "write", "update", "search"]},
+            "category": {"type": "enum", "values": ["commands", "preferences", "structure", "notes"]},
+            "content": {"type": "string", "required_if": "action in [write,update]"},
+            "query": {"type": "string", "required_if": "action=search"}
+          },
+          "capabilities": ["跨会话记忆", "自动更新", "智能检索"],
+          "limitations": ["本地存储依赖"]
+        },
+        {
+          "name": "long_term_memory",
+          "description": "长期记忆存储",
+          "source": "lingma_inspired", 
+          "parameters": {
+            "action": {"type": "enum", "values": ["create", "update", "delete", "search"]},
+            "title": {"type": "string", "required": true},
+            "content": {"type": "string", "required_if": "action in [create,update]"},
+            "category": {"type": "enum", "values": ["user_prefer", "project_info", "experience"]},
+            "scope": {"type": "enum", "values": ["workspace", "global"]},
+            "keywords": {"type": "array", "items": {"type": "string"}}
+          },
+          "capabilities": ["结构化存储", "分类管理", "关键词索引"],
+          "limitations": ["存储容量限制"]
+        }
+      ]
+    },
+    
+    "collaboration": {
+      "description": "协作和版本控制工具",
+      "tools": [
+        {
+          "name": "git_operations",
+          "description": "Git版本控制操作",
+          "source": "enhanced",
+          "parameters": {
+            "operation": {"type": "enum", "values": ["status", "diff", "commit", "push", "pull", "branch"]},
+            "message": {"type": "string", "required_if": "operation=commit"},
+            "files": {"type": "array", "items": {"type": "string"}, "optional": true}
+          },
+          "capabilities": ["智能提交消息", "冲突检测", "分支管理"],
+          "limitations": ["需要Git仓库"]
+        },
+        {
+          "name": "atlassian_integration",
+          "description": "Atlassian产品集成",
+          "source": "rovo_dev",
+          "parameters": {
+            "product": {"type": "enum", "values": ["confluence", "jira"]},
+            "action": {"type": "string", "required": true},
+            "cloud_id": {"type": "string", "required": true}
+          },
+          "capabilities": ["Confluence页面管理", "Jira问题跟踪", "评论协作"],
+          "limitations": ["需要认证"]
+        }
+      ]
+    },
+    
+    "web_integration": {
+      "description": "网络和外部资源工具",
+      "tools": [
+        {
+          "name": "web_search",
+          "description": "网络搜索",
+          "source": "augment_inspired",
+          "parameters": {
+            "query": {"type": "string", "required": true},
+            "num_results": {"type": "number", "default": 5, "max": 10},
+            "time_range": {"type": "enum", "values": ["day", "week", "month", "year", "all"], "default": "all"}
+          },
+          "capabilities": ["实时搜索", "结果过滤", "时间范围控制"],
+          "limitations": ["API配额限制"]
+        },
+        {
+          "name": "web_fetch",
+          "description": "网页内容获取",
+          "source": "augment_inspired",
+          "parameters": {
+            "url": {"type": "string", "required": true},
+            "format": {"type": "enum", "values": ["markdown", "text", "html"], "default": "markdown"}
+          },
+          "capabilities": ["内容提取", "格式转换", "清理处理"],
+          "limitations": ["JavaScript渲染限制"]
+        }
+      ]
+    },
+    
+    "task_automation": {
+      "description": "任务自动化和智能代理",
+      "tools": [
+        {
+          "name": "autonomous_agent",
+          "description": "自主任务执行代理",
+          "source": "claude_inspired",
+          "parameters": {
+            "task": {"type": "string", "required": true, "description": "详细任务描述"},
+            "context": {"type": "string", "optional": true, "description": "任务上下文"},
+            "expected_output": {"type": "string", "optional": true, "description": "期望输出格式"},
+            "max_steps": {"type": "number", "default": 10, "max": 50}
+          },
+          "capabilities": ["多步骤任务执行", "状态管理", "错误恢复"],
+          "limitations": ["复杂度限制", "时间限制"]
+        },
+        {
+          "name": "task_planner",
+          "description": "智能任务规划",
+          "source": "enhanced",
+          "parameters": {
+            "goal": {"type": "string", "required": true},
+            "constraints": {"type": "array", "items": {"type": "string"}},
+            "resources": {"type": "array", "items": {"type": "string"}}
+          },
+          "capabilities": ["任务分解", "依赖分析", "资源规划"],
+          "limitations": ["规划复杂度限制"]
+        }
+      ]
+    },
+    
+    "visualization": {
+      "description": "可视化和图表工具",
+      "tools": [
+        {
+          "name": "mermaid_diagram",
+          "description": "Mermaid图表生成",
+          "source": "augment_inspired",
+          "parameters": {
+            "diagram_type": {"type": "enum", "values": ["flowchart", "sequence", "class", "state", "gantt"]},
+            "definition": {"type": "string", "required": true},
+            "title": {"type": "string", "optional": true}
+          },
+          "capabilities": ["多种图表类型", "自动布局", "导出功能"],
+          "limitations": ["语法复杂度限制"]
+        },
+        {
+          "name": "code_visualization",
+          "description": "代码结构可视化",
+          "source": "enhanced",
+          "parameters": {
+            "paths": {"type": "array", "items": {"type": "string"}},
+            "visualization_type": {"type": "enum", "values": ["dependency", "call_graph", "class_hierarchy"]}
+          },
+          "capabilities": ["依赖关系图", "调用图", "类层次图"],
+          "limitations": ["大型项目性能限制"]
+        }
+      ]
+    }
+  },
+  
+  "prompt_templates": {
+    "system_prompt": "你是 Rovo Dev Agent，一个智能的 AI 编程助手。你具备以下核心能力：\n\n1. **代码理解与分析**：通过语义搜索和符号定位快速理解代码库\n2. **智能编辑**：精确的代码修改和重构能力\n3. **任务自动化**：复杂编程任务的自主执行\n4. **协作集成**：与 Atlassian 产品和版本控制系统的深度集成\n5. **项目记忆**：跨会话的项目知识管理\n\n**工作原则**：\n- 始终先分析问题，制定详细的执行计划\n- 使用最合适的工具组合完成任务\n- 提供清晰的进度反馈和结果总结\n- 注重代码质量和安全性\n- 支持用户学习和技能提升",
+    
+    "task_analysis_template": "## 📋 任务分析\n\n**目标**：{goal}\n\n**关键组件**：\n{components}\n\n**执行步骤**：\n{steps}\n\n**所需工具**：\n{tools}\n\n**风险评估**：\n{risks}",
+    
+    "progress_update_template": "## ⚡ 进度更新\n\n**已完成**：\n{completed}\n\n**当前步骤**：{current_step}\n\n**下一步**：{next_step}\n\n**遇到的问题**：\n{issues}",
+    
+    "completion_summary_template": "## ✅ 任务完成总结\n\n**目标达成**：{goal_achieved}\n\n**主要变更**：\n{changes}\n\n**质量检查**：\n{quality_checks}\n\n**建议后续步骤**：\n{next_recommendations}"
+  },
+  
+  "workflow_patterns": {
+    "code_analysis": [
+      "grep_file_content OR codebase_search",
+      "open_files",
+      "expand_code_chunks", 
+      "symbol_search (if needed)"
+    ],
+    
+    "code_modification": [
+      "open_files",
+      "expand_code_chunks",
+      "get_diagnostics (before)",
+      "find_and_replace_code OR create_file",
+      "get_diagnostics (after)",
+      "git_operations (commit)"
+    ],
+    
+    "problem_solving": [
+      "get_diagnostics",
+      "codebase_search OR symbol_search",
+      "web_search (if needed)",
+      "autonomous_agent (for complex fixes)",
+      "code_quality_check"
+    ],
+    
+    "project_setup": [
+      "open_files (config files)",
+      "bash (install dependencies)",
+      "project_memory (save setup info)",
+      "get_diagnostics",
+      "mermaid_diagram (architecture)"
+    ]
+  },
+  
+  "integration_capabilities": {
+    "rovo_platform": {
+      "confluence_integration": "完整的页面创建、编辑、评论功能",
+      "jira_integration": "问题跟踪、状态更新、评论协作",
+      "search_integration": "跨产品的统一搜索体验"
+    },
+    
+    "development_tools": {
+      "ide_integration": "语言服务器协议支持",
+      "git_integration": "智能提交和分支管理", 
+      "ci_cd_integration": "构建状态监控和部署支持"
+    },
+    
+    "ai_capabilities": {
+      "semantic_understanding": "代码意图理解和语义搜索",
+      "intelligent_suggestions": "基于上下文的智能建议",
+      "automated_reasoning": "复杂问题的自动推理和解决"
+    }
+  },
+  
+  "security_framework": {
+    "command_execution": {
+      "injection_detection": true,
+      "command_whitelist": ["npm", "yarn", "git", "python", "node", "java", "mvn", "gradle"],
+      "user_confirmation": "for_destructive_operations",
+      "sandbox_execution": "when_available"
+    },
+    
+    "file_operations": {
+      "path_validation": true,
+      "backup_creation": "for_modifications",
+      "permission_checks": true,
+      "size_limits": "100MB_per_file"
+    },
+    
+    "network_access": {
+      "url_validation": true,
+      "content_filtering": true,
+      "rate_limiting": true,
+      "ssl_verification": "required"
+    }
+  },
+  
+  "performance_optimization": {
+    "concurrent_execution": "支持并行工具调用",
+    "caching_strategy": "智能缓存搜索结果和文件内容",
+    "lazy_loading": "按需加载大型文件和目录",
+    "result_pagination": "大结果集的分页处理"
+  },
+  
+  "extensibility": {
+    "plugin_architecture": "模块化工具插件系统",
+    "custom_tools": "支持用户自定义工具",
+    "workflow_customization": "可配置的工作流模式",
+    "integration_apis": "第三方工具集成接口"
+  }
+}
