@@ -32,7 +32,11 @@ export abstract class BaseMCPTool {
     return {
       name: this.name,
       description: this.description,
-      inputSchema: this.inputSchema.describe(this.description)
+      inputSchema: {
+        type: "object",
+        properties: {},
+        description: this.description
+      }
     };
   }
 }
@@ -377,7 +381,7 @@ export class BashTool extends BaseMCPTool {
       const result = await execa('bash', ['-c', command], {
         timeout: params.timeout || 30000,
         cwd: params.cwd || process.cwd(),
-        encoding: 'utf-8'
+        encoding: 'utf8'
       });
 
       return {

@@ -4,13 +4,24 @@
  */
 
 import RovoDevAgent from './src/agent/rovo-agent.js';
+import dotenv from 'dotenv';
+
+// 加载环境变量
+dotenv.config();
 
 async function testAgent() {
-  // 使用你提供的 API Key
+  // 从环境变量读取 API Key
+  const apiKey = process.env.DEEPSEEK_TOKEN;
+  
+  if (!apiKey) {
+    console.error('❌ 请在 .env 文件中设置 DEEPSEEK_TOKEN');
+    process.exit(1);
+  }
+
   const agent = new RovoDevAgent({
-    apiKey: 'sk-19dfff435fdb4518849c3c566a0e16bb',
-    model: 'deepseek-chat',
-    temperature: 0.1
+    apiKey,
+    model: process.env.DEFAULT_MODEL || 'deepseek-chat',
+    temperature: parseFloat(process.env.DEFAULT_TEMPERATURE || '0.1')
   });
 
   console.log('🤖 测试 Rovo Dev Agent');

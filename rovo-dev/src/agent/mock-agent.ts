@@ -229,10 +229,10 @@ export class MockRovoDevAgent {
       case 'bash':
         console.log(chalk.gray('📊 命令执行分析:'));
         if (result.data.stdout) {
-          const lines = result.data.stdout.split('\n').filter(line => line.trim());
+          const lines = result.data.stdout.split('\n').filter((line: string) => line.trim());
           console.log(chalk.gray(`  - 输出行数: ${lines.length}`));
           if (result.data.command?.includes('ls')) {
-            const files = lines.filter(line => !line.startsWith('total'));
+            const files = lines.filter((line: string) => !line.startsWith('total'));
             console.log(chalk.gray(`  - 发现文件/目录: ${files.length} 个`));
           }
         }

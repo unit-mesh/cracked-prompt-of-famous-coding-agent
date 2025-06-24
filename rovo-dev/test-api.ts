@@ -4,11 +4,22 @@
 
 import { generateText } from 'ai';
 import { createOpenAI } from '@ai-sdk/openai';
+import dotenv from 'dotenv';
+
+// 加载环境变量
+dotenv.config();
 
 async function testAPI() {
+  const apiKey = process.env.DEEPSEEK_TOKEN;
+  
+  if (!apiKey) {
+    console.error('❌ 请在 .env 文件中设置 DEEPSEEK_TOKEN');
+    process.exit(1);
+  }
+
   const openai = createOpenAI({
-    apiKey: 'sk-19dfff435fdb4518849c3c566a0e16bb',
-    baseURL: 'https://api.deepseek.com'
+    apiKey,
+    baseURL: process.env.DEEPSEEK_BASE_URL || 'https://api.deepseek.com'
   });
 
   try {

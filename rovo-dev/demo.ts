@@ -36,15 +36,21 @@ async function runDemo() {
   });
   console.log();
 
-  // 尝试使用真实 Agent（会降级到工具模式）
-  console.log(chalk.blue('🤖 使用 Rovo Dev Agent (带 API 降级)'));
+  // 尝试使用真实 Agent
+  console.log(chalk.blue('🤖 使用 Rovo Dev Agent'));
   console.log(chalk.gray('-'.repeat(60)));
   
+  const apiKey = process.env.DEEPSEEK_TOKEN;
+  
   const realAgent = new RovoDevAgent({
-    apiKey: 'invalid-key-for-demo', // 故意使用无效 key 来演示降级
-    model: 'deepseek-chat',
-    temperature: 0.1
+    apiKey: apiKey || 'invalid-key-for-demo', // 使用环境变量或演示降级
+    model: process.env.DEFAULT_MODEL || 'deepseek-chat',
+    temperature: parseFloat(process.env.DEFAULT_TEMPERATURE || '0.1')
   });
+
+  if (!apiKey) {
+    console.log(chalk.yellow('⚠️  未设置 DEEPSEEK_TOKEN，将演示降级模式'));
+  }
 
   try {
     await realAgent.executeTask(demoTasks[0].task);
