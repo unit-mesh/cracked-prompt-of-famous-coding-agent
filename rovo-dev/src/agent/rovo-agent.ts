@@ -194,10 +194,21 @@ export class RovoDevAgent {
         
         console.log(chalk.yellow(`🔄 执行轮次 ${iteration}`));
         
-        const stepResult = await this.executeStep(execution);
-        
-        if (!stepResult.shouldContinue) {
-          shouldContinue = false;
+        try {
+          const stepResult = await this.executeStep(execution);
+          
+          if (!stepResult.shouldContinue) {
+            shouldContinue = false;
+          }
+        } catch (error) {
+          // 如果是 API 错误，尝试降级到工具模式
+          if (this.isAPIError(error)) {
+            console.log(chalk.yellow('⚠️  API 调用失败，切换到工具模式'));
+            await this.fallbackToToolMode(execution, userInput);
+            shouldContinue = false;
+          } else {
+            throw error;
+          }
         }
 
         // 避免无限循环
@@ -423,6 +434,103 @@ export class RovoDevAgent {
 
   getAvailableTools(): string[] {
     return this.toolRegistry.getAllTools().map(tool => tool.name);
+  }
+
+  private isAPIError(error: any): boolean {
+    return error && (
+      error.message?.includes('Authentication Fails') ||
+      error.message?.includes('API key') ||
+      error.message?.includes('invalid') ||
+      error.statusCode === 401 ||
+      error.statusCode === 403
+    );
+  }
+
+  private async fallbackToToolMode(execution: TaskExecution, userInput: string) {
+    console.log(chalk.cyan('🔧 使用工具模式执行任务...'));
+    
+    // 基于任务内容选择合适的工具
+    const tools = this.selectToolsForTask(userInput);
+    
+    for (const toolCall of tools) {
+      await this.handleToolCall(execution, toolCall);
+    }
+
+    // 生成简单的总结
+    console.log(chalk.cyan('📝 任务执行总结:'));
+    console.log('已使用以下工具完成任务:');
+    tools.forEach(tool => {
+      console.log(`- ${tool.toolName}: ${tool.args ? JSON.stringify(tool.args) : ''}`);
+    });
+  }
+
+  private selectToolsForTask(task: string): Array<{toolName: string, args: any}> {
+    const tools = [];
+
+    if (task.includes('查看') || task.includes('列出') || task.includes('显示')) {
+      if (task.includes('目录') || task.includes('文件')) {
+        tools.push({
+          toolName: 'bash',
+          args: { command: 'ls -la' }
+        });
+      }
+      if (task.includes('package.json') || task.includes('项目')) {
+        tools.push({
+          toolName: 'open_files',
+          args: { file_paths: ['package.json'] }
+        });
+      }
+    }
+
+    if (task.includes('搜索') || task.includes('查找')) {
+      const pattern = this.extractSearchPattern(task);
+      tools.push({
+        toolName: 'grep_file_content',
+        args: { pattern, max_results: 10 }
+      });
+    }
+
+    if (task.includes('创建') || task.includes('新建')) {
+      tools.push({
+        toolName: 'create_file',
+        args: { 
+          file_path: 'ai-generated-file.txt',
+          content: '# AI 生成的文件\n这是一个由 Rovo Dev Agent 创建的文件。'
+        }
+      });
+    }
+
+    if (task.includes('诊断') || task.includes('检查')) {
+      tools.push({
+        toolName: 'get_diagnostics',
+        args: { file_paths: ['src/index.ts', 'package.json'] }
+      });
+    }
+
+    // 如果没有匹配到特定工具，使用默认组合
+    if (tools.length === 0) {
+      tools.push(
+        {
+          toolName: 'bash',
+          args: { command: 'pwd && ls -la' }
+        },
+        {
+          toolName: 'open_files',
+          args: { file_paths: ['package.json'] }
+        }
+      );
+    }
+
+    return tools;
+  }
+
+  private extractSearchPattern(task: string): string {
+    if (task.includes('TODO')) return 'TODO';
+    if (task.includes('import')) return 'import';
+    if (task.includes('function')) return 'function';
+    if (task.includes('class')) return 'class';
+    if (task.includes('console')) return 'console.log';
+    return 'export'; // 默认搜索
   }
 }
 

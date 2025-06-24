@@ -7,7 +7,11 @@
 import { Command } from 'commander';
 import chalk from 'chalk';
 import inquirer from 'inquirer';
+import dotenv from 'dotenv';
 import RovoDevAgent from './agent/rovo-agent.js';
+
+// 加载环境变量
+dotenv.config();
 
 const program = new Command();
 
